@@ -1,0 +1,52 @@
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS `proposals`;
+DROP TABLE IF EXISTS `cars`;
+DROP TABLE IF EXISTS `users`;
+
+-- Create proposals table
+CREATE TABLE `proposals` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) DEFAULT NULL,
+    `car_id` int(11) DEFAULT NULL,
+    `ic` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+    `address` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+    `status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'Pending',
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    `name` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `user_id` (`user_id`),
+    KEY `car_id` (`car_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Create cars table
+CREATE TABLE `cars` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `brand` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+    `model` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+    `car_age` int(11) NOT NULL,
+    `availability` tinyint(1) NOT NULL,
+    `car_image_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Create users table
+CREATE TABLE `users` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `username` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+    `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+    `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'No address provided',
+    `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+    `user_role` int(11) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`id`),
+    KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Insert dummy data into users table
+INSERT INTO `users` (`username`, `email`, `address`, `password`, `user_role`) VALUES
+('technician', 'technician@gmail.com', 'No address provided', 'technician', 3),
+('admin', 'admin@gmail.com', 'No address provided', 'admin', 2);

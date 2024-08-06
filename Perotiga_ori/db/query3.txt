@@ -1,0 +1,73 @@
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS `proposals`;
+DROP TABLE IF EXISTS `cars`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `payments`;
+
+-- Create proposals table
+CREATE TABLE `proposals` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) DEFAULT NULL,
+    `car_id` int(11) DEFAULT NULL,
+    `ic` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+    `address` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+    `status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT 'Pending',
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    `name` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `user_id` (`user_id`),
+    KEY `car_id` (`car_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Create cars table with additional fields
+CREATE TABLE `cars` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `brand` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+    `model` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+    `car_age` int(11) NOT NULL,
+    `availability` tinyint(1) NOT NULL,
+    `car_image_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `price_per_day` double(10,2) NOT NULL,
+    `transmission` varchar(50) COLLATE utf8mb4_general_ci,
+    `fuel_type` varchar(50) COLLATE utf8mb4_general_ci,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Create users table with phone_num field
+CREATE TABLE `users` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `email` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `address` varchar(200) COLLATE utf8mb4_general_ci DEFAULT 'No address provided',
+    `password` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+    `user_role` int(11) NOT NULL,
+    `phone_num` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`id`),
+    KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Create payments table
+CREATE TABLE `payments` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `car_id` int(11) NOT NULL,
+    `payment_date` date NOT NULL,
+    `amount` decimal(10,2) NOT NULL,
+    `payment_status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Pending',
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`id`),
+    KEY `car_id` (`car_id`),
+    CONSTRAINT `fk_car_id` FOREIGN KEY (`car_id`) REFERENCES `cars` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `users` (`username`, `name`, `email`, `address`, `password`, `user_role`, `phone_num`) VALUES
+('technician', 'Technician User', 'technician@gmail.com', 'No address provided', 'technician', 3, '012-3456789'),
+('admin', 'Admin User', 'admin@gmail.com', 'No address provided', 'admin', 2, '019-8765432'),
+('user', 'Regular User', 'user@gmail.com', 'No address provided', 'user', 1, '011-23456789');
+
+
